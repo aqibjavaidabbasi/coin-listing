@@ -1,0 +1,26 @@
+[
+    {
+        "question": "What is the name of the main character in the game?",
+        "answers": [
+            "true",
+            "false"
+        ],
+        "correct": "true"
+    },
+    {
+        "question": "How many levels are there in the game?",
+        "answers": [
+            "true",
+            "false"
+        ],
+        "correct": "false"
+    },
+    {
+        "question": "Each level in the game has a time limit. How long is it?",
+        "answers": [
+            "true",
+            "false"
+        ],
+        "correct": "true"
+    }
+]
