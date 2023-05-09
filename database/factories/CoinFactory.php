@@ -24,7 +24,7 @@ class CoinFactory extends Factory
             'image' => $faker->imageUrl(),
             'symbol' => $faker->currencyCode,
             'network_chain' => $faker->word,
-            'listing_status' => $faker->randomElement(['active', 'inactive']),
+            'listing_status' => $faker->randomElement(['listed', 'presale']),
             'launch_date' => Carbon::now(),
             'contract_address' => $faker->uuid,
             'coin_description' => $faker->sentence,
