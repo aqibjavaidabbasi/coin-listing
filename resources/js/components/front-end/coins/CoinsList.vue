@@ -113,7 +113,7 @@ export default {
         }
     },
     created() {
-        axios.get(process.env.MIX_APP_URL + '/coins')
+        axios.get(process.env.MIX_API_URL + '/coins?type=active')
             .then(response => {
                 this.coins = response.data.data;
             })
@@ -123,7 +123,7 @@ export default {
     },
     methods: {
         toggleVote(id) {
-            axios.post(process.env.MIX_APP_URL + '/coins/vote/' + id)
+            axios.post(process.env.MIX_API_URL + '/coins/vote/' + id)
                 .then(response => {
                     console.log(response);
                 })

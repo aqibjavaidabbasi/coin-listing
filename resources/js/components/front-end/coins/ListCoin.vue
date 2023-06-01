@@ -256,7 +256,7 @@ export default {
                         formData.append(key, this.coin[key])
                     }
                     formData.append('image', this.coin.image)
-                    axios.post(process.env.MIX_APP_URL + '/list-coin', formData)
+                    axios.post(process.env.MIX_API_URL + '/list-coin', formData)
                     .then(res => {
                         if (res.data.success == true) {
                             // empty input fields

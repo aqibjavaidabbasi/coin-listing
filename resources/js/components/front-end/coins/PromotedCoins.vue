@@ -81,7 +81,7 @@
             }
         },
         created () {
-            axios.get(process.env.MIX_APP_URL + '/coins/promoted')
+            axios.get(process.env.MIX_API_URL + '/coins/promoted')
                 .then(response => {
                     this.promotedCoins = response.data.data;
                 })
@@ -91,7 +91,7 @@
         },
         methods: {
             toggleVote(id) {
-                axios.post(process.env.MIX_APP_URL + '/coins/vote/' + id)
+                axios.post(process.env.MIX_API_URL + '/coins/vote/' + id)
                     .then(response => {
                         console.log(response);
                     })

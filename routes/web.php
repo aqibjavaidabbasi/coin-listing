@@ -22,7 +22,7 @@ Route::get('/', function (Request $request) {
 Route::get('/{any}', function ($any) {
     if (strpos($any, 'admin/') === 0) {
         return view('layouts.admin');
-    } else if (strpos($any, 'assets/') === 0) {
+    } else if (strpos($any, 'assets/') === 0 || strpos($any, 'storage/') === 0) {
         return response()->file(public_path($any));
     }
     return view('layouts.app');

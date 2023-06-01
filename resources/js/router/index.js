@@ -6,7 +6,10 @@ import NewsDetail from './../components/front-end/NewsDetail.vue'
 import AdminLogin from './../components/admin/auth/Login.vue'
 import Dashboard from './../components/admin/dashboard/index.vue'
 import Coins from './../components/admin/coins/index.vue'
+import CreateCoin from './../components/admin/coins/create.vue'
 import CoinRequests from './../components/admin/coins/requests.vue'
+import Blogs from './../components/admin/blogs/index.vue'
+import CreateBlog from './../components/admin/blogs/create.vue'
 
 export const routes = [
     {
@@ -64,13 +67,23 @@ export const routes = [
             {
                 path: 'coins/create',
                 name: 'coins-create',
-                component: Coins,
+                component: CreateCoin,
                 meta: { requiresAuth: true }
             },
             {
                 path: 'coins/requests',
                 name: 'coins-requests',
                 component: CoinRequests,
+            },
+            {
+                path: 'blogs',
+                name: 'blogs',
+                component: Blogs,
+            },
+            {
+                path: 'blogs/create',
+                name: 'blogs-create',
+                component: CreateBlog,
             },
             {
                 path: 'analytics',

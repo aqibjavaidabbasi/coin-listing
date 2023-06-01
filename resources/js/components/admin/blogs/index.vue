@@ -4,14 +4,10 @@
             <h3 class="page-title"> Coins </h3>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <router-link to="/admin/coins">List</router-link>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Requests</li>
+                    <li class="breadcrumb-item active" aria-current="page">List</li>
                 </ol>
             </nav>
         </div>
-        <filters @filter="filter" :type="'coin_requests'"></filters>
         <div class="row">
             <div class="col">
                 <div class="table-responsive">
@@ -58,7 +54,6 @@
 
 <script>
 import Layout from "../layout";
-import Filters from "./filters/index";
 export default {
     name: 'Dashboard',
     data() {
@@ -67,8 +62,7 @@ export default {
         }
     },
     components: {
-        Layout,
-        Filters
+        Layout
     },
     created() {
         this.getCoins();
@@ -76,23 +70,7 @@ export default {
     methods: {
         getCoins() {
             var context = this;
-            axios.get(process.env.MIX_API_URL + '/coins/requests')
-                .then(response => {
-                    context.coins = response.data.data;
-                    console.log(context.coins.data);
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
-        filter(filters) {
-            var context = this;
-            // convert filters obj to query param exclude empty values
-            filters = Object.keys(filters)
-                .filter(key => filters[key] !== '')
-                .map(key => key + '=' + filters[key])
-                .join('&');
-            axios.get(process.env.MIX_API_URL + '/coins/requests' + '?type=all&' + filters)
+            axios.get('/api/coins')
                 .then(response => {
                     context.coins = response.data.data;
                     console.log(context.coins.data);

@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\V1\Web\CoinController;
 Route::post('list-coin', [CoinController::class, 'create']);
 Route::group(['prefix' => 'coins'], function () {
     Route::get('/requests', [CoinController::class, 'coinRequests']);
+    Route::post('/update/{id}', [CoinController::class, 'update']);
     Route::get('/{promoted?}', [CoinController::class, 'index']);
     Route::post('/vote/{id}', [CoinController::class, 'vote']);
 });

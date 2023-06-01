@@ -39,6 +39,26 @@
                     </ul>
                 </div>
             </li>
+            <li class="nav-item menu-items"  :class="{ active: active === 'blogs' }">
+                <a class="nav-link" data-bs-toggle="collapse" href="#blogs-options" aria-expanded="false"
+                    aria-controls="blogs-options">
+                    <span class="menu-icon">
+                        <i class="mdi mdi-view-list"></i>
+                    </span>
+                    <span class="menu-title">Blogs</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                <div class="collapse" :class="{ show: active === 'blogs' }" id="blogs-options">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"> 
+                            <router-link class="nav-link" to="/admin/blogs">List</router-link>
+                        </li>
+                        <li class="nav-item"> 
+                            <router-link class="nav-link" to="/admin/blogs/create">Create</router-link>
+                        </li>
+                    </ul>
+                </div>
+            </li>
         </ul>
     </nav>
 </template>
