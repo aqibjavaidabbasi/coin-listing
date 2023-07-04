@@ -20840,8 +20840,8 @@ div.tagsinput {
 .switch {
   position: relative;
   display: inline-block;
-  width: 60px;
-  height: 30px;
+  width: 51px;
+  height: 20px;
 }
 
 /* Hide default HTML checkbox */
@@ -20867,10 +20867,10 @@ div.tagsinput {
 .slider:before {
   position: absolute;
   content: "";
-  height: 22px;
-  width: 22px;
-  left: 4px;
-  bottom: 4px;
+  height: 15px;
+  width: 15px;
+  left: 3px;
+  bottom: 3px;
   background-color: white;
   -webkit-transition: .4s;
   transition: .4s;
@@ -20914,6 +20914,15 @@ input:focus, select:focus {
     position: relative;
     top: -15px;
 }
+.imagePreviewWrapperedit {
+
+  width: 100%;
+  cursor: pointer;
+  background-size: cover;
+  background-position: center center;
+  position: relative;
+  top: -15px;
+}
 
 .imagePreviewWrapper.full-width {
   width: 100%;
@@ -20938,4 +20947,34 @@ input:focus, select:focus {
 
 select.form-control, input.form-control {
   color: white!important;
+}
+
+a.badge {
+  text-decoration: none;
+}
+a.badge:hover {
+  text-decoration: none;
+  color:white;
+}
+.list-style{
+  list-style: none;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+.action-view{
+  display: flex;
+  color: white;
+}
+.responsive {
+  width: 100%;
+  height: auto;
+}
+.dropdown-action {
+  position: absolute;
+  z-index: 1;
+}
+.table-responsive {
+  overflow-x: unset;
+  -webkit-overflow-scrolling: touch;
 }

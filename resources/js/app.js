@@ -11,7 +11,7 @@ import App from './App.vue';
 import VueRouter from 'vue-router';
 import VueAxios from 'vue-axios';
 import axios from 'axios';
-import {routes} from './router/index';
+import router from './router/index';
 import { ValidationProvider, ValidationObserver } from 'vee-validate';
 import * as rules from 'vee-validate/dist/rules';
 import { extend } from 'vee-validate';
@@ -61,11 +61,6 @@ window.$ = window.jQuery = $;
 
 Object.keys(rules).forEach(rule => {
     extend(rule, rules[rule]);
-});
-
-const router = new VueRouter({
-    mode: 'history',
-    routes: routes
 });
 
 const app = new Vue({

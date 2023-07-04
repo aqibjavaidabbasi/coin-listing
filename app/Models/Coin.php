@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+
+use App\Models\CoinDetail;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Coin extends Model
 {
@@ -14,6 +16,11 @@ class Coin extends Model
     public function getImageAttribute($value)
     {
         return asset('storage/coins/' . $value);
+    }
+
+    public function coinDetail()
+    {
+        return $this->hasOne(CoinDetail::class, 'symbol', 'symbol');
     }
 
 }

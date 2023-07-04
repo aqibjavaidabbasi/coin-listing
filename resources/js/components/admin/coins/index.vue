@@ -22,32 +22,52 @@
                                 <th> Listing Status </th>
                                 <th> Network Chain </th>
                                 <th> Contract Address </th>
+                                <th></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="coin in coins" :key="coin.id">
+                            <tr v-for="coin in coins" :key="coin.id" :id="'coinRow_' + coin.id">
                                 <td> {{ coin.id }} </td>
                                 <td>
-                                    <div class="d-flex">
-                                        <img :src="coin.image" style="width:43px!important; height: 43px!important" alt="image" class="img-sm me-3 rounded-circle border">
-                                        <div class="media-body">
-                                            <h6 class="mb-1 text-light">{{ coin.name }}</h6>
-                                            <p class="mb-0 text-muted"> {{ coin.symbol }} </p>
-                                        </div>
-                                    </div>
+                                    <img :src="getImageUrl(coin.image)" v-if="coin.image" class="responsive" alt="image">
+                                    <img :src="getImageUrlPlaceholder()" v-else class="responsive" alt="image">
                                 </td>
-                                <td> 
+
+                                <td>
                                     <label class="switch">
                                         <input type="checkbox" v-model="coin.is_active" @change="updateCoin(coin)">
                                         <span class="slider round"></span>
                                     </label>
                                 </td>
                                 <td> {{ coin.votes }} </td>
-                                <td class="text-center"> 
-                                    <div v-if="coin.listing_status === 'listed'" class="badge badge-pill badge-outline-success">{{ coin.listing_status }}</div>
+                                <td class="text-center">
+                                    <div v-if="coin.listing_status === 'listed'"
+                                        class="badge badge-pill badge-outline-success">{{ coin.listing_status }}</div>
                                     <div v-else class="badge badge-pill badge-outline-info">{{ coin.listing_status }}</div>
                                 <td> {{ coin.network_chain }} </td>
                                 <td> {{ coin.contract_address }} </td>
+                                <td>
+                                    <li class="nav-item dropdown list-style">
+                                        <a class="nav-link" id="profileDropdown" href="#" data-bs-toggle="dropdown">
+                                            <div class="navbar-profile action-view">
+                                                <p class="mb-0 d-none d-sm-block navbar-profile-name text-white">Action</p>
+                                                <i class="mdi mdi-menu-down d-none d-sm-block"></i>
+                                            </div>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-right navbar-dropdown preview-list dropdown-action"
+                                            aria-labelledby="profileDropdown">
+
+                                            <router-link :to="'/admin/coin/edit/' + coin.id" class="list-style">
+                                                <p class="p-1 mb-0 text-center list-style">Edit</p>
+                                            </router-link>
+                                            <div class="dropdown-divider"></div>
+                                            <p class="p-1 mb-0 text-center" @click.prevent="deleteCoin(coin.id)">Delete</p>
+                                            <div class="dropdown-divider"></div>
+
+                                        </div>
+                                    </li>
+
+                                </td>
                             </tr>
                         </tbody>
                         <tfoot>
@@ -91,9 +111,9 @@ export default {
         },
         updateCoin(coin) {
             var context = this;
-            axios.post(process.env.MIX_API_URL + '/coins/update/' + coin.id, {
-                    is_active: coin.is_active,
-                })
+            axios.post(process.env.MIX_API_URL + '/update/' + coin.id, {
+                is_active: coin.is_active,
+            })
                 .then(response => {
                     this.$swal({
                         position: 'top-end',
@@ -138,6 +158,73 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        deleteCoin(coinId) {
+            if (!confirm('Are you sure you want to delete this post?' + coinId)) {
+                return;
+            }
+            axios.post(process.env.MIX_API_URL + '/coin-delete/' + coinId, {
+                "_method": 'delete',
+            })
+                .then(res => {
+                    if (res.data.success == true) {
+                        // Remove the table row
+                        const tableRow = document.getElementById('coinRow_' + coinId);
+                        if (tableRow) {
+                            tableRow.remove();
+                        }
+
+                        // Display success message
+                        this.$swal({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Coin deleted successfully!',
+                            target: '#custom-target',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+                            toast: true,
+                            background: "linear-gradient(to bottom right, #1ea38f 0%, #5cf9e2 100%)",
+                        });
+                    } else {
+                        this.$swal({
+                            position: 'top-end',
+                            icon: 'error',
+                            title: 'An error occurred. Please try again later.',
+                            target: '#custom-target',
+                            showConfirmButton: false,
+                            timer: 5000,
+                            timerProgressBar: true,
+                            toast: true,
+                            color: '#dedefd',
+                            background: "linear-gradient(to bottom right, #b51b35 0%, #fd4a68 100%)",
+                        });
+                    }
+                })
+                .catch(err => {
+                    this.$swal({
+                        position: 'top-end',
+                        icon: 'error',
+                        title: 'An error occurred. Please try again later.',
+                        target: '#custom-target',
+                        showConfirmButton: false,
+                        timer: 5000,
+                        timerProgressBar: true,
+                        toast: true,
+                        color: '#dedefd',
+                        background: "linear-gradient(to bottom right, #b51b35 0%, #fd4a68 100%)",
+                    });
+                })
+        },
+        getImageUrl(imagePath) {
+            const baseUrl = process.env.MIX_APP_URL;
+
+            return  imagePath;
+        },
+        getImageUrlPlaceholder(imagePath) {
+            const baseUrl = process.env.MIX_APP_URL;
+            console.log(baseUrl);
+            return baseUrl + '/storage/placeholder.jpg';
         }
     }
 }

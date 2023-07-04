@@ -1,13 +1,13 @@
 <template>
     <Layout>
         <div class="page-header">
-            <h3 class="page-title"> Blogs </h3>
+            <h3 class="page-title"> Edit Blogs </h3>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item">
                         <router-link to="/admin/blogs">List</router-link>
                     </li>
-                    <li class="breadcrumb-item active" aria-current="page">Create</li>
+                    <li class="breadcrumb-item active" aria-current="page">Edit</li>
                 </ol>
             </nav>
         </div>
@@ -40,26 +40,30 @@
                                     <div class="card-header">
                                         <h4>Publish</h4>
                                     </div>
+
                                     <div class="card-body">
                                         <div class="form-group">
                                             <label for="status">Status</label>
-                                            <select name="status" class="form-control" id="status">
-                                                <option value="draft">Draft</option>
-                                                <option value="published">Published</option>
+                                            <select name="status" class="form-control" id="status" v-model="blog.is_active">
+                                                <option :value="0">Draft</option>
+                                                <option :value="1">Published</option>
                                             </select>
                                         </div>
+
+
+
                                         <div class="form-group">
                                             <button type="button" class="btn btn-primary float-end"
-                                                @click="handleSubmit(saveBlog)">Publish</button>
+                                                @click="handleSubmit(updateBlog)">Publish</button>
                                         </div>
                                     </div>
                                 </div>
 
                                 <div class="card mb-3">
                                     <div class="form-group p-3">
-                                        <label for="status">Feature</label>
+                                        <label for="status">Feature </label>
                                         <label class="switch float-end">
-                                            <input type="checkbox" name="is_featured" v-model="blog.is_featured">
+                                            <input type="checkbox" name="is_featured"  v-model="blog.is_featured">
                                             <span class="slider round"></span>
                                         </label>
                                     </div>
@@ -69,30 +73,24 @@
                                     <div class="card-header">
                                         <h4>Featured Image</h4>
                                     </div>
-                                    <!-- <div class="card-body p-0 m-1">
-                                        <div class="form-group">
-                                            <label class="btn btn-dark bg-dark-700 w-100" @input="pickFile">
-                                                <div class="py-1 border border-bottom border-dark"> <i
-                                                        class="fas fa-file-upload"></i> Select Image </div>
-                                                <input type="file" accept="image/*" ref="fileInput" class="imageInput">
-                                                <div class="imagePreviewWrapper full-width mt-0 m-auto"
-                                                    :style="{ 'background-image': `url(${previewImage})`, 'height': `${previewHeight}px` }">
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div> -->
+                                   
                                     <validation-provider name="Coin Image" rules="" v-slot="{ errors }">
                                         <label class="btn btn-dark bg-dark-700 w-100" @input="pickFile">
-                                            <div class="py-1 border border-bottom border-dark"> <i
-                                                    class="fas fa-file-upload"></i> Coin Image <span
-                                                    class="text-danger">*</span> </div>
+                                            <div class="py-1 border border-bottom border-dark pb-5">
+                                                <i class="fas fa-file-upload"></i> Coin Image <span
+                                                    class="text-danger">*</span>
+                                            </div>
                                             <input type="file" accept="image/*" ref="fileInput" class="imageInput" required>
                                             <div class="imagePreviewWrapper mt-0 m-auto"
                                                 :style="{ 'background-image': `url(${previewImage})` }">
+                                                <!-- Display the pre-selected image -->
+                                                <img v-if="previewImage" :src="getImageUrl(blog.image)"
+                                                    class="imagePreviewWrapperedit" alt="Preview Image">
                                             </div>
                                         </label>
                                         <span class="text-sm text-danger">{{ errors[0] }}</span>
                                     </validation-provider>
+
                                 </div>
                             </div>
                         </div>
@@ -110,17 +108,17 @@ import axios from 'axios';
 
 
 export default {
-    name: 'Create Blog',
+    name: 'Edit',
     data() {
         return {
             dropifyOptions: {
                 accept: 'image/*',
             },
             blog: {
-                title: '',
+                title: '', // Initialize with empty values
                 slug: '',
                 content: '',
-                image: '',
+                is_active: 1,
                 is_featured: '',
 
             },
@@ -189,14 +187,21 @@ export default {
             previewHeight: 0
         }
     },
+ 
     components: {
         Layout,
         Editor,
     },
     created() {
-
+        this.fetchBlogData();
     },
+
     methods: {
+        getImageUrl(previewImage) {
+            const baseUrl = process.env.MIX_APP_URL;
+
+            return baseUrl + '/storage/blog/' + previewImage;
+        },
         pickFile() {
             let input = this.$refs.fileInput
             let file = input.files
@@ -215,7 +220,8 @@ export default {
 
             this.blog.slug = 'http://127.0.0.1:8000' + '/' + this.blog.title.toLowerCase().replace(/ /g, '-')
         },
-        saveBlog() {
+        updateBlog() {
+            const blogId = this.$route.params.id;
             this.$refs.observer.validate().then(success => {
                 if (success) {
                     let formData = new FormData()
@@ -226,17 +232,17 @@ export default {
                     // formData.append('image', this.coin.image)
                     formData.append('source', 'admin')
                     console.log(formData);
-                    axios.post('/api/blog-create', formData)
+                    axios.post('/api/blog-update/' + blogId, formData)
                         .then(res => {
                             if (res.data.success == true) {
                                 // empty input fields
-                                this.blog = {
-                                    name: "",
-                                    slug: "",
-                                    content: "",
+                                // this.blog = {
+                                //     name: "",
+                                //     slug: "",
+                                //     content: "",
 
-                                }
-                                this.$refs.observer.reset();
+                                // }
+                              //  this.$refs.observer.reset();
                                 // remove image
                                 this.previewImage = 'https://www.lyon-ortho-clinic.com/files/cto_layout/img/placeholder/book.jpg'
                                 this.$swal({
@@ -283,16 +289,33 @@ export default {
             });
         },
 
-        // saveBlog() {
+        fetchBlogData() {
+            const blogId = this.$route.params.id;
+            axios.get(`/api/blog-edit/${blogId}`)
+                .then(res => {
 
-        //     this.$refs.observer.validate().then(success => {
-        //         if (!success) {
-        //             return
-        //         }
-        //         console.log(this.blog);
-        //         this.$store.dispatch('blog/create', this.blog)
-        //     })
-        // }
+                    if (res.data.success) {
+
+                        const blogData = res.data.data;
+                        console.log('data', res.data.data.id)
+                        this.blog = {
+                            id: blogData.id,
+                            title: blogData.title,
+                            slug: blogData.slug,
+                            content: blogData.content,
+                            image: blogData.image,
+                            is_active: blogData.is_active,
+                            is_featured: blogData.is_featured,
+                        };
+                        this.previewImage = blogData.image;
+                    } else {
+                        // Handle error
+                    }
+                })
+                .catch(err => {
+                    // Handle error
+                });
+        },
     }
 }
 </script>

@@ -78,16 +78,18 @@
                                                     <span class="text-sm text-danger">{{ errors[0] }}</span>
                                                 </validation-provider>
                                             </div> -->
-
                                             <div class="col-12">
                                                 <validation-provider name="Network Chain" rules="" v-slot="{ errors }">
                                                     <select class="form-control" v-model="coin.network_chain">
                                                         <option v-for="chain in networkChains" :value="chain.id"
-                                                            :key="chain.id">{{ chain.name }}</option>
+                                                            :key="chain.id">
+                                                            {{ getNetworkChainName(chain.id) }}
+                                                        </option>
                                                     </select>
                                                     <span class="text-sm text-danger">{{ errors[0] }}</span>
                                                 </validation-provider>
                                             </div>
+
 
                                         </div>
                                     </div>
@@ -209,7 +211,7 @@
                                 <div class="row">
                                     <div class="col-md-12">
                                         <button type="button" class="btn btn-primary float-end"
-                                            @click="handleSubmit(saveCoin)">Save</button>
+                                            @click="handleSubmit(UpdateCoin)">Save</button>
                                     </div>
                                 </div>
                             </form>
@@ -229,16 +231,16 @@ export default {
     name: 'Dashboard',
     data() {
         return {
+            coinId: null, // Add a coinId property to store the ID of the coin being edited
             coins: [],
             dropifyOptions: {
                 accept: 'image/*',
             },
-            selectedNetworkChain: null,
             coin: {
                 image: '',
                 name: "",
                 symbol: "",
-                network_chain:"",
+                network_chain: "",
                 listing_status: "",
                 launch_date: "",
                 contract_address: "",
@@ -249,19 +251,28 @@ export default {
                 reddit_link: "",
                 twitter_link: "",
                 discord_link: "",
+                network_chain_name: "",
             },
             previewImage: 'https://www.lyon-ortho-clinic.com/files/cto_layout/img/placeholder/book.jpg',
-            networkChains: []
+            selectedNetworkChain: "", // Add this line to define the selectedNetworkChain property
         }
+
     },
     components: {
         Layout,
         'vue-dropify': VueDropify
     },
     created() {
+        this.coinId = this.$route.params.id; // Get the coin ID from the route params
+        this.fetchCoinData();
         this.getNetworks();
+
     },
     methods: {
+        getNetworkChainName(chainId) {
+            const chain = this.networkChains.find(chain => chain.id === chainId);
+            return chain ? chain.name : '';
+        },
         pickFile() {
             let input = this.$refs.fileInput
             let file = input.files
@@ -275,36 +286,51 @@ export default {
             }
             this.coin.image = file[0]
         },
-        saveCoin() {
+        fetchCoinData() {
+            axios.get(`/api/coin-edit/${this.coinId}`) // Fetch the coin data using the coin ID
+                .then(res => {
+                    if (res.data.success) {
+                        const coinData = res.data.data;
+                        this.coin = { ...coinData }; // Assign the fetched coin data to the 'coin' object
+                        this.previewImage = coinData.image;
+                    } else {
+                        // Handle error
+                    }
+                })
+                .catch(err => {
+                    // Handle error
+                });
+        },
+        getNetworks() {
+            axios
+                .get('/api/networks') // Assuming the endpoint is '/api/networks'
+                .then(response => {
+                    console.log(response);
+                    this.networkChains = response.data.data; // Assign the response data to networks
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+
+        UpdateCoin() {
             this.$refs.observer.validate().then(success => {
+                const coinId = this.$route.params.id;
                 if (success) {
                     let formData = new FormData()
                     for (let key in this.coin) {
                         formData.append(key, this.coin[key])
                     }
                     // formData.append('image', this.coin.image)
-                    formData.append('source', 'admin')
+                    // formData.append('source', 'admin')
                     console.log(formData);
-                    axios.post(process.env.MIX_API_URL + '/list-coin', formData)
+
+                    axios.post(process.env.MIX_API_URL + '/update/' + coinId, formData)
                         .then(res => {
                             if (res.data.success == true) {
                                 // empty input fields
-                                this.coin = {
-                                    name: "",
-                                    symbol: "",
-                                    network_chain: "",
-                                    listing_status: "",
-                                    launch_date: "",
-                                    contract_address: "",
-                                    coin_description: "",
-                                    website_link: "",
-                                    telegram_link: "",
-                                    chart_link: "",
-                                    reddit_link: "",
-                                    twitter_link: "",
-                                    discord_link: "",
-                                }
-                                this.$refs.observer.reset();
+
+                                // this.$refs.observer.reset();
                                 // remove image
                                 this.previewImage = 'https://www.lyon-ortho-clinic.com/files/cto_layout/img/placeholder/book.jpg'
                                 this.$swal({
@@ -349,18 +375,7 @@ export default {
                         })
                 }
             });
-        },
-        getNetworks() {
-            axios
-                .get('/api/networks') // Assuming the endpoint is '/api/networks'
-                .then(response => {
-                    console.log(response);
-                    this.networkChains = response.data.data; // Assign the response data to networks
-                })
-                .catch(error => {
-                    console.log(error);
-                });
-        },
+        }
     }
 }
 </script>

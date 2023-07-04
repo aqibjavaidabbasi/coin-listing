@@ -59,6 +59,29 @@
                     </ul>
                 </div>
             </li>
+
+            <li class="nav-item menu-items"  :class="{ active: active === 'network-change' }">
+               
+                <a class="nav-link" data-bs-toggle="collapse" href="#network-change" aria-expanded="false"
+                    aria-controls="network-change">
+                    <span class="menu-icon">
+                        <i class="mdi mdi-view-list"></i>
+                    </span>
+                    <span class="menu-title">Network Change</span>
+                    <i class="menu-arrow"></i>
+                </a>
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item"> 
+                            <router-link class="nav-link" to="/admin/networks">List</router-link>
+                        </li>
+                        <li class="nav-item"> 
+                            <router-link class="nav-link" to="/admin/network/create">Create</router-link>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+           
         </ul>
     </nav>
 </template>

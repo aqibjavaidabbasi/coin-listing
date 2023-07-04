@@ -1,11 +1,11 @@
 <template>
     <nav class="navbar p-0 fixed-top d-flex flex-row">
         <div class="navbar-brand-wrapper d-flex d-lg-none align-items-center justify-content-center">
-            <router-link class="snavbar-brand brand-logo-mini" to="/admin/dashboard"><img src="/assets/images/logo.webp" class="w-100" alt="logo"></router-link>
+            <router-link class="snavbar-brand brand-logo-mini" to="/admin/dashboard"><img src="/assets/images/logo.webp"
+                    class="w-100" alt="logo"></router-link>
         </div>
         <div class="navbar-menu-wrapper flex-grow d-flex align-items-stretch">
-            <button class="navbar-toggler navbar-toggler align-self-center" type="button"
-                data-toggle="minimize">
+            <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize">
                 <span class="mdi mdi-menu"></span>
             </button>
             <ul class="navbar-nav navbar-nav-right">
@@ -89,8 +89,11 @@
                                 </div>
                             </div>
                             <div class="preview-item-content">
-                                <p class="preview-subject mb-1">Log out</p>
+                                <a href="#" class="logout-link" @click="logout">
+                                    <p class="preview-subject mb-1">Log out</p>
+                                </a>
                             </div>
+
                         </a>
                         <div class="dropdown-divider"></div>
                         <p class="p-3 mb-0 text-center">Advanced settings</p>
@@ -107,6 +110,16 @@
 
 <script>
 export default {
-        name: 'Header'
+    name: 'Header',
+    methods: {
+        logout() {
+         
+            // Clear the token from local storage or perform any other logout-related actions
+            localStorage.removeItem('token'); // Example of removing the token from local storage
+
+            // Redirect the user to the login page or any other desired page
+            this.$router.push('/admin/login');
+        }
     }
+}
 </script>
